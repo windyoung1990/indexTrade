@@ -16,7 +16,8 @@ let totalTime = 0;
 // a50AllMa.splice(0,4130)
 // 最近三年 年化利率13%
 a50.splice(0,3889)
-a50AllMa.splice(0,3887)
+a50AllMa.splice(0,3887);
+var diffDaysInter = 1000 * 60 * 60 * 24
 for(var i=0; i < a50AllMa.length; i++) {
     var a50Item = a50[i];
     var maItem = a50AllMa[i];
@@ -25,18 +26,23 @@ for(var i=0; i < a50AllMa.length; i++) {
     var maPrice = maItem[`ma${referMa}`];
     let tradeDay =  a50Item.d
 
-    if (!buyed && maItem.ma5 > maItem.ma10 ) {
-        buyed = true;
-        var amount = initMoney / dayPrice;
-        // 开盘买入
-        result.push({
-            op: 'buy',
-            amount,
-            index: i,
-            tradeDay,
-            total:initMoney,
-            price: dayPrice
-        })
+    if (!buyed && maItem.ma5 >= maItem.ma10 ) {
+        var lastOp = result[result.length - 1];
+        // var diffDays = new Date(tradeDay + ' 00:00:00').getTime() - new Date(lastOp.tradeDay + ' 00:00:00').getTime();
+        // 开盘价大于5日线
+        if (!lastOp || (maItem.ma5 > a50AllMa[i-1].ma5 )) {
+            buyed = true;
+            var amount = initMoney / dayPrice;
+            // 开盘买入
+            result.push({
+                op: 'buy',
+                amount,
+                index: i,
+                tradeDay,
+                total:initMoney,
+                price: dayPrice
+            })
+        }
     }
     if (buyed && a50Item.c < maItem.ma5 ) {
         var lastOp = result[result.length - 1];
@@ -71,7 +77,7 @@ for(var i=0; i < a50AllMa.length; i++) {
     }
     
 }
-console.log(result[result.length - 1])
+console.log(result[result.length - 1], result.length)
 fs.writeFileSync('./result/moveA50Result.js', JSON.stringify(result, null, '\t'))
 // console.log(totalTime/(1000*60*60*24))
 

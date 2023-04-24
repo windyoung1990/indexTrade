@@ -25,16 +25,20 @@ for(var i=0; i < a50AllMa.length; i++) {
     let tradeDay =  a50Item.d
 
     if (!buyed && maItem.ma5 > maItem.ma10  ) {
-        buyed = true;
-        var amount = initMoney / dayPrice;
-        result.push({
-            op: 'buy',
-            amount,
-            index: i,
-            tradeDay,
-            total:initMoney,
-            price: dayPrice
-        })
+        var lastOp = result[result.length - 1];
+        // 开盘价大于5日线
+        if (!lastOp || maItem.ma5 > a50AllMa[i-1].ma5) {
+            buyed = true;
+            var amount = initMoney / dayPrice;
+            result.push({
+                op: 'buy',
+                amount,
+                index: i,
+                tradeDay,
+                total:initMoney,
+                price: dayPrice
+            })
+        }
     }
     if (buyed && a50Item.c < maItem.ma10 ) {
         var lastOp = result[result.length - 1];

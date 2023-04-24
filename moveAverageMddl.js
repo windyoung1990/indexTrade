@@ -28,8 +28,8 @@ for(var i=0; i < a50AllMa.length; i++) {
 
     if (!buyed && maItem.ma5 > maItem.ma10 ) {
         var lastOp = result[result.length - 1];
-        // 上次卖出的收盘价不等于今天的开盘价，考虑买入，避免来回买卖的情况
-        if (!lastOp || lastOp.price !== dayPrice) {
+        // // 开盘价要在5日线上
+        if (!lastOp || maItem.ma5 >= a50AllMa[i-1].ma5) {
             buyed = true;
             var amount = initMoney / dayPrice;
             // 开盘买入
